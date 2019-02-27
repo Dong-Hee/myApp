@@ -5,11 +5,17 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var app = express();
+//const expressLayouts = require('express-ejs-layouts');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.engine('html', require('ejs').renderFile);
-app.set('view engine', 'html');
+app.set('view engine', 'ejs');
+//app.set('layout', 'layout/layout');
+//app.set("layout extractScripts", true);
+//app.use(expressLayouts);
+
+//app.engine('html', require('ejs').renderFile);
+//app.set('view engine', 'html');
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -18,10 +24,11 @@ app.use(cookieParser());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-
 //연결
 app.use('/', require('./api/controller/indexController.js'));
-app.use('/bd', require('./api/controller/bulletineController.js'));
+app.use('/store', require('./api/controller/storeController.js'));
+app.use('/shop', require('./api/controller/shopController.js'));
+app.use('/board', require('./api/controller/boardController.js'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

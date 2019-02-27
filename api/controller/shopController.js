@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('../routes/bulletineRoute');
+const controller = require('../routes/shopRoute');
 
-router.get('/list', controller.list);
+router.get('/', controller.main);
 
 module.exports = router;
