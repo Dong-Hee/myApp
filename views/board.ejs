@@ -1,33 +1,31 @@
-
-    <a href="#" class="button">글쓰기</a>
+    <form method="get" action="/board/form">
+        <button type="submit" class="success button" id="form-submit">글쓰기</button>
+    </form>
+    
     <hr/>
     <table>
         <thead>
             <tr>
-            <th width="200">Table Header</th>
-            <th>Table Header</th>
-            <th width="150">Table Header</th>
-            <th width="150">Table Header</th>
+                <th width="50">No</th>
+                <th width="100">대표이미지</th>
+                <th width="250">상품 명</th>
+                <th width="300">내용</th>
+                <th width="200">즉 구가</th>
+                <th width="200">현재 입찰가</th>
+                <th width="200">마감시간</th>
             </tr>
         </thead>
         <tbody>
+            <% Items.forEach(function(item) { %>
             <tr>
-            <td>Content Goes Here</td>
-            <td>This is longer content Donec id elit non mi porta gravida at eget metus.</td>
-            <td>Content Goes Here</td>
-            <td>Content Goes Here</td>
+                <td>1</td>    
+                <td><img src="<%= item.info.img %>" /></td>
+                <td><a href="/board/detail/<%=item.Id%>"><%= item.info.subject %> d</a></td>
+                <td><%= item.info.description %></td>
+                <td><%= item.info.subject %></td>
+                <td><%= item.info.subject %></td>
+                <td><%= item.info.subject %></td>
             </tr>
-            <tr>
-            <td>Content Goes Here</td>
-            <td>This is longer Content Goes Here Donec id elit non mi porta gravida at eget metus.</td>
-            <td>Content Goes Here</td>
-            <td>Content Goes Here</td>
-            </tr>
-            <tr>
-            <td>Content Goes Here</td>
-            <td>This is longer Content Goes Here Donec id elit non mi porta gravida at eget metus.</td>
-            <td>Content Goes Here</td>
-            <td>Content Goes Here</td>
-            </tr>
+            <% }); %>
         </tbody>
     </table>

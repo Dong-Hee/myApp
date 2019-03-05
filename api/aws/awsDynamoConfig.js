@@ -1,5 +1,4 @@
 require('dotenv').config();
-
 const AWS = require("aws-sdk");
 AWS.config.update({
     region: "ap-northeast-2",
@@ -9,10 +8,9 @@ AWS.config.update({
   //ap-northeast-2
 });
 
+
 const client = new AWS.DynamoDB.DocumentClient();
 
-console.log('config.js');
-
 module.exports = {
-    client
+  client
 }

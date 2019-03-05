@@ -1,87 +1,134 @@
-const { client } = require('../awsDynamoDB/config');
+const { client } = require('../aws/awsDynamoConfig');
+var ejs = require('ejs');
+const response = (status, body) => ({
+    statusCode : status
+    , body : JSON.stringify(body)
+});
 
 exports.list = (req, res) => {
     var params = {
-        TableName : "freeBoard"
-        , ProjectionExpression : "Id, #order, info.subject, info.description"
-        , FilterExpression : "#order between :start and :end"
+        TableName : "board"
+        , ProjectionExpression : "Id, #type, info.subject, info.description, info.img, info.buyNow, info.startPrice"
+        , FilterExpression : "#type = :type"
         , ExpressionAttributeNames : {
-            "#order" : "Order"
+            "#type" : "type"
         },
         ExpressionAttributeValues : {
-            ":start" : 1
-            ,":end" : 100
+            ":type" : "auction"
         }
     };
-
+    
     client.scan(params, (err, data) => {
         if(err){
-            console.log(err);
-            res.send(JSON.stringify(err));
-        } else{
-            res.send(JSON.stringify(data));
-            data.Items.forEach((data) => {
-
-            });
+            console.log(err, response(500, data));
+        } else {
+            res.render('board', data);
         }
     });
+
 }
 
 exports.detail = (req, res) => {
-    console.log(req.params);
-    var p =  parseInt(req.params.id);
-    console.log(p);
     var params = {
-        TableName : "freeBoard"
+        TableName : "board"
         , KeyConditionExpression: "#id = :param"
         , ExpressionAttributeNames:{
             "#id": "Id"
         },
         ExpressionAttributeValues: {
-            ":param": p
+            ":param": req.params.id
         }
     };
 
     client.query(params, (err, data) => {
         if(err){
             console.log(err);
-            res.send(err);
         } else{
-            res.send(JSON.stringify(data));
+            res.render('detail', data);
         }
     });
 }
 
+exports.form = (req, res) => {
+    res.render('boardForm');
+}
+
 exports.create = (req, res) => {
-    console.log('create');
+    console.log(req.body);
+    console.log(req.file);
+
+    var fileUrl;
+    if(req.file !== undefined){
+        fileUrl = req.file.location;
+    }
+
     var params = {
-        TableName : "freeBoard"
+        TableName : "board"
         , Item : {
-            "Id" : 2534
-            , "Order" : 1252
+            "Id" : String(Date.now() + Math.floor((Math.random() * 1000) + 1))
+            , "type" : "auction"
             , "info" : {
-                "subject" : "test35"
-                , "description" : "description325"
+                "subject" : req.body.subject
+                , "description" : req.body.description
+                , "img" : fileUrl
+                , "buyNow" : req.body.buyNow
+                , "startPrice" : req.body.startPrice
+                , "endDate" : req.body.endDate
+                /*
+                , "tender" : {
+                    "tenderDate" : Date.now()
+                    , "tenderPrice" : req.body.startPrice
+                    , "tenderUserId" : 'testUser01'
+                }
+                */
             }
         }
     };
 
     client.put(params, (err, data) => {
         if(err){
-            //console.log(err);
-            res.send('test');
+            console.log(err);
+            res.send(JSON.stringify(err));
         } else {
-            //console.log(JSON.stringify(params));
-            //console.log(JSON.stringify(data));
-            res.send('test');
+            res.send(JSON.stringify(data));
         }
     });
+
+}
+
+exports.tender = (req, res) => {
+
+    var tender = {};
+    tender.tenderDate = Date.now();
+    tender.tenderPrice = req.body.tenderPrice;
+    tender.tenderUserId = '입찰유저1';
+
+    var params = {
+        TableName : "board"
+        , Key : {
+            "Id" : req.body.key
+            , "type" : "auction" 
+        },
+        UpdateExpression : "set info.tender = :t"
+        , ExpressionAttributeValues : {
+            ":t" : tender
+        },
+        ReturnValues:"UPDATED_NEW"
+    };
+
+    client.update(params, (err, data) => {
+        if(err){
+            console.log(err);
+        } else {
+            console.log(data);
+        }
+    });
+
 }
 
 exports.update = (req, res) => {
-    console.log(req.params);
     var params = {
-        TableName : "freeBoard"
+        TableName : "board"
         , Key : {
             "Id" : 234
             , "Order" : 122 
@@ -108,7 +155,7 @@ exports.update = (req, res) => {
 
 exports.delete = (req, res) => {
     var params = {
-        TableName : "freeBoard"
+        TableName : "board"
         , Key : {
             "Id" : 234
             , "Order" : 122 

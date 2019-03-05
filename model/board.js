@@ -6,7 +6,6 @@ AWS.config.update({
     accessKeyId: process.env.ACCESSKEY,
     secretAccessKey: process.env.SECRETKEY,
     endpoint: "https://dynamodb.ap-northeast-2.amazonaws.com"
-  //ap-northeast-2
 });
 
 var dynamodb = new AWS.DynamoDB();
@@ -18,8 +17,8 @@ var params = {
         { AttributeName: "Order", KeyType: "RANGE" }  //Sort key
     ],
     AttributeDefinitions: [       
-        { AttributeName: "Id", AttributeType: "N" },
-        { AttributeName: "Order", AttributeType: "N" }
+        { AttributeName: "Id", AttributeType: "S" },
+        { AttributeName: "Order", AttributeType: "S" }
     ],
     ProvisionedThroughput: {       
         ReadCapacityUnits: 1, 

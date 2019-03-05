@@ -1,0 +1,35 @@
+
+    <div class="grid-x grid-margin-x medium-margin-collapse">
+        <div class="cell small-6">
+            <div class="medium-6 cell">
+                상품 명 : <%=Items[0].info.subject %>
+            </div>
+            <div class="medium-3 cell">
+                설명 : <%=Items[0].info.description %>
+            </div>
+            <div class="medium-3 cell">
+                즉시구입가 : <%=Items[0].info.buyNow %>
+            </div>
+            <div class="medium-3 cell">
+                마감 시간 : <%=Items[0].info.endDate %> / 현재 시간 : 
+            </div>
+        
+            <form method="post" action="/board/tender" accept-charset="UTF-8">
+                <input type="hidden" name="key" value="<%=Items[0].Id%>"/>
+                <input type="hidden" name="_method" value="put"/>
+                <div class="medium-3 cell">
+                    <label>입찰하기 가격
+                        <input type="number" placeholder="" id="tenderPrice" name="tenderPrice">
+                    </label>
+                </div>
+                <button type="submit" class="success button" id="form-submit">입찰</button>
+            </form>
+            <div>
+                입찰 히스토리 1<br/>
+                <% if(Items[0].info.tender) {%>
+                현재 입찰가 : <%=Items[0].info.tender.tenderPrice %> 
+                    / 현재 입찰 사용자 : <%=Items[0].info.tender.tenderUserId %>
+                <%}%>
+            </div>
+        </div>
+    </div>
